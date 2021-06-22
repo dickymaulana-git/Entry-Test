@@ -12,186 +12,101 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function App() {
-  const [check1, setCheck1] = useState(false);
-  const [check2, setCheck2] = useState(false);
-  const [check3, setCheck3] = useState(false);
-
-  const [input1, setInput1] = useState('0');
-  const [input2, setInput2] = useState('0');
-  const [input3, setInput3] = useState('0');
-
+  const [check, setCheck] = useState([false, false, false]);
+  const [input, setInput] = useState(['0', '0', '0']);
+  const operator = ['+', '-', 'x', '/'];
   const [hasil, setHasil] = useState(0);
 
   const tambah = () => {
-    if(check1 === true && check2 === true && check3 === false){
-      setHasil(parseInt(input1)+parseInt(input2))
-    }else if(check1 === true && check2 === false && check3 === true){
-      setHasil(parseInt(input1)+parseInt(input3))
-    }else if(check1 === false && check2 === true && check3 === true){
-      setHasil(parseInt(input2)+parseInt(input3))
-    }else{
-      setHasil(parseInt(input1)+parseInt(input2)+parseInt(input3))
-    }
+    let hasil_tambah = input
+      .filter((e, i) => check[i])
+      .map(e => parseFloat(e))
+      .reduce((prevItem, currentItem, i) => (prevItem += currentItem));
+    setHasil(hasil_tambah);
   };
 
   const kurang = () => {
-    if(check1 === true && check2 === true && check3 === false){
-      setHasil(parseInt(input1)-parseInt(input2))
-    }else if(check1 === true && check2 === false && check3 === true){
-      setHasil(parseInt(input1)-parseInt(input3))
-    }else if(check1 === false && check2 === true && check3 === true){
-      setHasil(parseInt(input2)-parseInt(input3))
-    }else{
-      setHasil(parseInt(input1)-parseInt(input2)-parseInt(input3))
-    }
+    let hasil_kurang = input
+      .filter((e, i) => check[i])
+      .map(e => parseFloat(e))
+      .reduce((prevItem, currentItem, i) => (prevItem -= currentItem));
+    setHasil(hasil_kurang);
   };
 
   const kali = () => {
-    if(check1 === true && check2 === true && check3 === false){
-      setHasil(parseInt(input1)*parseInt(input2))
-    }else if(check1 === true && check2 === false && check3 === true){
-      setHasil(parseInt(input1)*parseInt(input3))
-    }else if(check1 === false && check2 === true && check3 === true){
-      setHasil(parseInt(input2)*parseInt(input3))
-    }else{
-      setHasil(parseInt(input1)*parseInt(input2)*parseInt(input3))
-    }
+    let hasil_kali = input
+      .filter((e, i) => check[i])
+      .map(e => parseFloat(e))
+      .reduce((prevItem, currentItem, i) => (prevItem *= currentItem));
+    setHasil(hasil_kali);
   };
 
   const bagi = () => {
-    if(check1 === true && check2 === true && check3 === false){
-      setHasil(parseInt(input1)/parseInt(input2))
-    }else if(check1 === true && check2 === false && check3 === true){
-      setHasil(parseInt(input1)/parseInt(input3))
-    }else if(check1 === false && check2 === true && check3 === true){
-      setHasil(parseInt(input2)/parseInt(input3))
-    }else{
-      setHasil(parseInt(input1)/parseInt(input2)/parseInt(input3))
-    }
+    let hasil_bagi = input
+      .filter((e, i) => check[i])
+      .map(e => parseFloat(e))
+      .reduce((prevItem, currentItem, i) => (prevItem /= currentItem));
+    setHasil(hasil_bagi);
   };
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <KeyboardAvoidingView behavior="padding" style={styles.container}>
         <View style={styles.inputContainer}>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Input Number"
-              keyboardType="numeric"
-              value={input1}
-              onChangeText={e => setInput1((e.replace(/[^0-9]/g, '')))}
-            />
-            <Icon
-              onPress={() => setCheck1(!check1)}
-              style={styles.iconChecker}
-              name="checkbox-marked"
-              color={check1 === false ? 'silver' : 'green'}
-              size={30}
-            />
-          </View>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Input Number"
-              keyboardType="numeric"
-              value={input2}
-              onChangeText={e => setInput2(e.replace(/[^0-9]/g, ''))}
-            />
-            <Icon
-              onPress={() => setCheck2(!check2)}
-              style={styles.iconChecker}
-              name="checkbox-marked"
-              color={check2 === false ? 'silver' : 'green'}
-              size={30}
-            />
-          </View>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Input Number"
-              keyboardType="numeric"
-              value={input3}
-              onChangeText={e => setInput3(e.replace(/[^0-9]/g, ''))}
-            />
-            <Icon
-              onPress={() => setCheck3(!check3)}
-              style={styles.iconChecker}
-              name="checkbox-marked"
-              color={check3 === false ? 'silver' : 'green'}
-              size={30}
-            />
-          </View>
+          {input.map((e, i) => {
+            return (
+              <View key={i} style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Input Number"
+                  keyboardType="numeric"
+                  value={input[i]}
+                  onChangeText={e => {
+                    let newInput = [...input];
+                    newInput[i] = e;
+                    setInput(newInput);
+                  }}
+                />
+                <Icon
+                  onPress={() => {
+                    let newCheck = [...check];
+                    newCheck[i] = !check[i];
+                    setCheck(newCheck);
+                  }}
+                  style={styles.iconChecker}
+                  name="checkbox-marked"
+                  color={check[i] === false ? 'silver' : 'green'}
+                  size={30}
+                />
+              </View>
+            );
+          })}
         </View>
         <View style={styles.operator}>
-          <TouchableOpacity
-            onPress={() => {
-              if (
-                (check1 === false && check3 === false && check2 === false) ||
-                (check1 === true && check3 === false && check2 === false) ||
-                (check2 === true && check3 === false && check1 === false) ||
-                (check3 === true && check1 === false && check2 === false)
-              ) {
-                alert('Error, Checklist minimal 2 input');
-              } else {
-                tambah();
-                Keyboard.dismiss();
-              }
-            }}
-            style={styles.operatorSignWrapper}>
-            <Text style={styles.operatorSignText}>+</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              if (
-                (check1 === false && check3 === false && check2 === false) ||
-                (check1 === true && check3 === false && check2 === false) ||
-                (check2 === true && check3 === false && check1 === false) ||
-                (check3 === true && check1 === false && check2 === false)
-              ) {
-                alert('Error, Checklist minimal 2 input');
-              } else {
-                kurang();
-                Keyboard.dismiss();
-              }
-            }}
-            style={styles.operatorSignWrapper}>
-            <Text style={styles.operatorSignText}>-</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              if (
-                (check1 === false && check3 === false && check2 === false) ||
-                (check1 === true && check3 === false && check2 === false) ||
-                (check2 === true && check3 === false && check1 === false) ||
-                (check3 === true && check1 === false && check2 === false)
-              ) {
-                alert('Error, Checklist minimal 2 input');
-              } else {
-                kali();
-                Keyboard.dismiss();
-              }
-            }}
-            style={styles.operatorSignWrapper}>
-            <Text style={styles.operatorSignText}>x</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              if (
-                (check1 === false && check3 === false && check2 === false) ||
-                (check1 === true && check3 === false && check2 === false) ||
-                (check2 === true && check3 === false && check1 === false) ||
-                (check3 === true && check1 === false && check2 === false)
-              ) {
-                alert('Error, Checklist minimal 2 input');
-              } else {
-                bagi();
-                Keyboard.dismiss();
-              }
-            }}
-            style={styles.operatorSignWrapper}>
-            <Text style={styles.operatorSignText}>/</Text>
-          </TouchableOpacity>
+          {operator.map((e, i) => (
+            <TouchableOpacity
+              key={i}
+              onPress={() => {
+                let count_check = check.filter(e => e === false);
+                if (count_check.length >= 2) {
+                  alert('Error, Checklist minimal 2 input');
+                } else {
+                  if (e === '+') {
+                    tambah();
+                  } else if (e === '-') {
+                    kurang();
+                  } else if (e === 'x') {
+                    kali();
+                  } else {
+                    bagi();
+                  }
+                  Keyboard.dismiss();
+                }
+              }}
+              style={styles.operatorSignWrapper}>
+              <Text style={styles.operatorSignText}>{e}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
         <View style={styles.hasilWrapper}>
           <Text style={styles.hasilText}>Hasil :</Text>
